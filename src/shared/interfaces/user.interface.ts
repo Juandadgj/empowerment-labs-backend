@@ -1,5 +1,5 @@
 export interface UserKey {
-  userId: number;
+  userId?: string;
 }
 
 export interface User extends UserKey {

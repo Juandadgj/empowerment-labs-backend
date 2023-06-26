@@ -13,8 +13,23 @@ import { AxiosService } from 'src/services/axios.service';
         name: 'Movie',
         useFactory: (_, configService: ConfigService) => dynamooseFactory(_, configService, 'Movie'),
         inject: [ConfigService],
-      }
-    ])
+      },
+      {
+        name: 'FavoriteMovie',
+        useFactory: (_, configService: ConfigService) => dynamooseFactory(_, configService, 'FavoriteMovie'),
+        inject: [ConfigService],
+      },
+      {
+        name: 'MovieNote',
+        useFactory: (_, configService: ConfigService) => dynamooseFactory(_, configService, 'MovieNote'),
+        inject: [ConfigService],
+      },
+      {
+        name: 'User',
+        useFactory: (_, configService: ConfigService) => dynamooseFactory(_, configService, 'User'),
+        inject: [ConfigService],
+      },
+    ]),
   ],
   controllers: [MovieController],
   providers: [MovieService, AxiosService]

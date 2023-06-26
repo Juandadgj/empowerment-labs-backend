@@ -1,9 +1,9 @@
 export interface FavoriteMovieKey {
-  favoriteId: number;
+  favoriteId?: string;
 }
 
 export interface FavoriteMovie extends FavoriteMovieKey {
   movieId: number;
-  userId: number;
-  createdAt: Date;
+  userId: string;
+  createdAt?: Date;
 }

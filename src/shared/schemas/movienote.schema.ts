@@ -1,15 +1,17 @@
 import { Schema } from "dynamoose";
+import { v4 } from 'uuid';
 
 export const MovieNoteSchema = new Schema({
   noteId: {
-    type: Number,
+    type: String,
+    default: v4,
     hashKey: true,
   },
   movieId: {
     type: Number,
   },
   userId: {
-    type: Number,
+    type: String,
   },
   noteTitle: {
     type: String,
@@ -22,3 +24,5 @@ export const MovieNoteSchema = new Schema({
     default: () => new Date(),
   }
 })
+
+export default MovieNoteSchema;

@@ -13,34 +13,34 @@ export class UserService {
 
   async create(createUserDto: CreateUserDto) {
     try {
-      const newUser = this.userModel.create(createUserDto);
+      const newUser = await this.userModel.create(createUserDto);
       return {
         status: true,
-        msg: '',
+        msg: 'User successfully created',
         data: newUser,
       }
     } catch (error) {
       return {
         status: false,
-        msg: '',
-        data: error.message
+        msg: error.message,
+        data: null,
       }
     }
   }
 
-  findOne(id: number) {
+  findOne(id: string) {
     try {
       const user = this.userModel.get({userId: id});
       return {
         status: true,
-        msg: '',
+        msg: 'Query completed successfully',
         data: user,
       }
     } catch (error) {
       return {
         status: false,
-        msg: '',
-        data: error.message
+        msg: error.message,
+        data: null
       }
     }
   }

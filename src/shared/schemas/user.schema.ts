@@ -1,8 +1,10 @@
 import { Schema } from "dynamoose";
+import { v4 } from 'uuid';
 
 export const UserSchema = new Schema({
   userId: {
-    type: Number,
+    type: String,
+    default: v4,
     hashKey: true,
   },
   name: {

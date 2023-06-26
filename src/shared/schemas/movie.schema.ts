@@ -5,9 +5,6 @@ export const MovieSchema = new Schema({
     type: Number,
     hashKey: true,
   },
-  movieApiId: {
-    type: String,
-  },
   movieIMDBId: {
     type: String,
   },
@@ -27,7 +24,7 @@ export const MovieSchema = new Schema({
     type: String,
   },
   popularity: {
-    type: String,
+    type: Number,
   },
   posterPath: {
     type: String,

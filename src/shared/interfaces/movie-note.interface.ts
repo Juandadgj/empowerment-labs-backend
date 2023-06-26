@@ -1,11 +1,11 @@
 export interface MovieNoteKey {
-  noteId: number;
+  noteId?: string;
 }
 
 export interface MovieNote extends MovieNoteKey {
   movieId: number;
-  userId: number;
+  userId: string;
   noteTitle: string;
   description: string;
-  createdAt: Date;
+  createdAt?: Date;
 }

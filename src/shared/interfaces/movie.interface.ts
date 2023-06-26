@@ -2,18 +2,17 @@ import { Genre } from "./genre.interface";
 import { Language } from "./language.interface";
 
 export interface MovieKey {
-  movieId: number
+  movieId: number;
 }
 
 export interface Movie extends MovieKey {
-  movieApiId: string;
   movieIMDBId: string;
-  language:  Language[];
-  genres: Genre[];
+  language:  Array<object>;
+  genres: Array<object>;
   originalLanguage: string;
   title: string;
   overview: string;
-  popularity: string;
+  popularity: number;
   posterPath: string;
   releaseDate: string;
   video: Boolean;
