@@ -1,6 +1,3 @@
-import { Genre } from "./genre.interface";
-import { Language } from "./language.interface";
-
 export interface UserKey {
   userId: number;
 }

@@ -1,5 +1,5 @@
 import { Injectable, NestInterceptor, ExecutionContext, CallHandler, BadGatewayException } from '@nestjs/common';
-import { Observable, throwError } from 'rxjs';
+import { Observable } from 'rxjs';
 import { catchError } from 'rxjs/operators';
 import { AxiosError } from 'axios';
 import type { CustomError } from '../shared/interfaces/cumtom-erros.interface'
@@ -7,6 +7,8 @@ import type { CustomError } from '../shared/interfaces/cumtom-erros.interface'
 @Injectable()
 export class AxiosInterceptor implements NestInterceptor {
   intercept(context: ExecutionContext, next: CallHandler): Observable<any> {
+    const isAxiosRequest = context.switchToHttp().getRequest().axiosInstance !== undefined;
+    if (!isAxiosRequest) return next.handle();
     return next.handle().pipe(
       catchError((error: AxiosError) => {
         const customError: CustomError = error.response.data;

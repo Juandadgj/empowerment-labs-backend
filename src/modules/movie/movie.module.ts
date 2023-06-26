@@ -1,5 +1,5 @@
 import { Module } from '@nestjs/common';
-import { ConfigModule, ConfigService, ConfigType } from "@nestjs/config"
+import { ConfigService } from "@nestjs/config"
 import { DynamooseModule } from 'nestjs-dynamoose';
 import { MovieService } from './movie.service';
 import { MovieController } from './movie.controller';
@@ -8,7 +8,6 @@ import { AxiosService } from 'src/services/axios.service';
 
 @Module({
   imports: [
-    ConfigModule.forRoot({isGlobal:true}),
     DynamooseModule.forFeatureAsync([
       {
         name: 'Movie',
