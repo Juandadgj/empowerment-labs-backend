@@ -3,8 +3,8 @@ import { ConfigModule, ConfigService, ConfigType } from "@nestjs/config"
 import { DynamooseModule } from 'nestjs-dynamoose';
 import { MovieService } from './movie.service';
 import { MovieController } from './movie.controller';
-import { MovieSchema } from '../../shared/schemas/movie.schema';
 import { dynamooseFactory } from '../../config/dynamoose.factory';
+import { AxiosService } from 'src/services/axios.service';
 
 @Module({
   imports: [
@@ -18,6 +18,6 @@ import { dynamooseFactory } from '../../config/dynamoose.factory';
     ])
   ],
   controllers: [MovieController],
-  providers: [MovieService]
+  providers: [MovieService, AxiosService]
 })
 export class MovieModule {}
