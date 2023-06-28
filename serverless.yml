@@ -1,0 +1,108 @@
+service: empowerment-labs-backend
+frameworkVersion: '3'
+
+
+plugins:
+  - serverless-plugin-optimize
+  - serverless-offline
+
+useDotenv: true
+custom:
+  tableName:
+    Users: '${env:USER_TABLE_NAME}-${sls:stage}'
+    Movies: '${env:MOVIE_TABLE_NAME}-${sls:stage}'
+    FavoriteMovies: '${env:FAVORITEMOVIE_TABLE_NAME}-${sls:stage}'
+    MovieNotes: '${env:MOVIENOTE_TABLE_NAME}-${sls:stage}'
+
+provider:
+  name: aws
+  stage: ${opt:stage, 'dev'}
+  region: us-east-2
+  runtime: nodejs18.x
+  iam:
+    role:
+      statements:
+        - Effect: Allow
+          Action:
+            - dynamodb:Query
+            - dynamodb:Scan
+            - dynamodb:GetItem
+            - dynamodb:PutItem
+            - dynamodb:UpdateItem
+            - dynamodb:DeleteItem
+            - dynamodb:BatchGetItem
+            - dynamodb:BatchWriteItem
+            - dynamodb:DescribeTable
+          Resource:
+            - Fn::GetAtt: [ UsersTable, Arn ]
+            - Fn::GetAtt: [ MoviesTable, Arn ]
+            - Fn::GetAtt: [ MovieNotesTable, Arn ]
+            - Fn::GetAtt: [ FavoriteMoviesTable, Arn ]
+  environment:
+    STAGE: ${env:STAGE}
+    ACCESS_KEY_ID: ${env:ACCESS_KEY_ID}
+    SECRET_ACCESS_KEY: ${env:SECRET_ACCESS_KEY}
+    REGION: ${env:REGION}
+    TMDB_TOKEN: ${env:TMDB_TOKEN}
+    USER_TABLE_NAME: ${env:USER_TABLE_NAME}
+    MOVIE_TABLE_NAME: ${env:MOVIE_TABLE_NAME}
+    FAVORITEMOVIE_TABLE_NAME: ${env:FAVORITEMOVIE_TABLE_NAME}
+    MOVIENOTE_TABLE_NAME: ${env:MOVIENOTE_TABLE_NAME}
+
+functions:
+  app:
+    handler: dist/main.handler
+    events:
+      - http:
+          method: ANY
+          path: /
+      - http:
+          method: ANY
+          path: '{proxy+}'
+
+resources:
+  Resources:
+    UsersTable:
+      Type: AWS::DynamoDB::Table
+      Properties:
+        AttributeDefinitions:
+          - AttributeName: userId
+            AttributeType: S
+        KeySchema:
+          - AttributeName: userId
+            KeyType: HASH
+        BillingMode: PAY_PER_REQUEST
+        TableName: ${self:custom.tableName.Users}
+    MoviesTable:
+      Type: AWS::DynamoDB::Table
+      Properties:
+        AttributeDefinitions:
+          - AttributeName: movieId
+            AttributeType: N
+        KeySchema:
+          - AttributeName: movieId
+            KeyType: HASH
+        BillingMode: PAY_PER_REQUEST
+        TableName: ${self:custom.tableName.Movies}
+    MovieNotesTable:
+      Type: AWS::DynamoDB::Table
+      Properties:
+        AttributeDefinitions:
+          - AttributeName: noteId
+            AttributeType: S
+        KeySchema:
+          - AttributeName: noteId
+            KeyType: HASH
+        BillingMode: PAY_PER_REQUEST
+        TableName: ${self:custom.tableName.MovieNotes}
+    FavoriteMoviesTable:
+      Type: AWS::DynamoDB::Table
+      Properties:
+        AttributeDefinitions:
+          - AttributeName: favoriteId
+            AttributeType: S
+        KeySchema:
+          - AttributeName: favoriteId
+            KeyType: HASH
+        BillingMode: PAY_PER_REQUEST
+        TableName: ${self:custom.tableName.FavoriteMovies}

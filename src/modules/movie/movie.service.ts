@@ -66,7 +66,7 @@ export class MovieService {
       if (!movieDB) {
         const movieApi = await this.axiosService.get(`/movie/${addFavoriteDto.movieId}`);
         const filteredDataMovie: Movie = plainToClass(FilteredDataMovie, movieApi)
-        const movie = await this.movieModel.create(filteredDataMovie)
+        this.movieModel.create(filteredDataMovie)
         await this.favoriteMovieModel.create(addFavoriteDto)
       } else {
         await this.favoriteMovieModel.create(addFavoriteDto)
@@ -115,7 +115,7 @@ export class MovieService {
       if (!movieDB) {
         const movieApi = await this.axiosService.get(`/movie/${addNoteDto.movieId}`);
         const filteredDataMovie: Movie = plainToClass(FilteredDataMovie, movieApi)
-        const movie = await this.movieModel.create(filteredDataMovie)
+        await this.movieModel.create(filteredDataMovie)
         await this.movieNoteModel.create(addNoteDto)
       } else {
         await this.movieNoteModel.create(addNoteDto)

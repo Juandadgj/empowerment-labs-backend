@@ -1,14 +1,15 @@
 import { ConfigService } from '@nestjs/config';
-import { MovieSchema } from '../shared/schemas/movie.schema';
 
 export const dynamooseFactory = (_, configService: ConfigService, schemaName: string) => {
-  const tableName = configService.get<string>(`${schemaName.toUpperCase()}_TABLE_NAME`);
   const schema = require(`../shared/schemas/${schemaName.toLowerCase()}.schema`).default;
+  const stage = configService.get<string>('STAGE')
+  const name = configService.get<string>(`${schemaName.toUpperCase()}_TABLE_NAME`);
+  const tableName = `${name}-${stage}`
 
   return {
-    schema: schema,
+    schema,
     options: {
-      tableName: tableName,
+      tableName,
       type: 'document',
       create: false,
       waitForActive: {
