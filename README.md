@@ -5,68 +5,54 @@
 [circleci-image]: https://img.shields.io/circleci/build/github/nestjs/nest/master?token=abc123def456
 [circleci-url]: https://circleci.com/gh/nestjs/nest
 
-  <p align="center">A progressive <a href="http://nodejs.org" target="_blank">Node.js</a> framework for building efficient and scalable server-side applications.</p>
-    <p align="center">
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/v/@nestjs/core.svg" alt="NPM Version" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/l/@nestjs/core.svg" alt="Package License" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/dm/@nestjs/common.svg" alt="NPM Downloads" /></a>
-<a href="https://circleci.com/gh/nestjs/nest" target="_blank"><img src="https://img.shields.io/circleci/build/github/nestjs/nest/master" alt="CircleCI" /></a>
-<a href="https://coveralls.io/github/nestjs/nest?branch=master" target="_blank"><img src="https://coveralls.io/repos/github/nestjs/nest/badge.svg?branch=master#9" alt="Coverage" /></a>
-<a href="https://discord.gg/G7Qnnhy" target="_blank"><img src="https://img.shields.io/badge/discord-online-brightgreen.svg" alt="Discord"/></a>
-<a href="https://opencollective.com/nest#backer" target="_blank"><img src="https://opencollective.com/nest/backers/badge.svg" alt="Backers on Open Collective" /></a>
-<a href="https://opencollective.com/nest#sponsor" target="_blank"><img src="https://opencollective.com/nest/sponsors/badge.svg" alt="Sponsors on Open Collective" /></a>
-  <a href="https://paypal.me/kamilmysliwiec" target="_blank"><img src="https://img.shields.io/badge/Donate-PayPal-ff3f59.svg"/></a>
-    <a href="https://opencollective.com/nest#sponsor"  target="_blank"><img src="https://img.shields.io/badge/Support%20us-Open%20Collective-41B883.svg" alt="Support us"></a>
-  <a href="https://twitter.com/nestframework" target="_blank"><img src="https://img.shields.io/twitter/follow/nestframework.svg?style=social&label=Follow"></a>
-</p>
-  <!--[![Backers on Open Collective](https://opencollective.com/nest/backers/badge.svg)](https://opencollective.com/nest#backer)
-  [![Sponsors on Open Collective](https://opencollective.com/nest/sponsors/badge.svg)](https://opencollective.com/nest#sponsor)-->
+## Empowerment Labs Movies
 
-## Description
+API de Empowerment Labs para el registro de usuarios y consulta de películas
 
-[Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
+## Stack
 
-## Installation
+- NestJS
+- DynamoDB
+- Axios
+- AWS Cognito
+- Passport.js
+- Swagger
+
+## Instalación
 
 ```bash
+$ yarn global add serverless
 $ yarn install
 ```
 
-## Running the app
+## Ejecutar la aplicación
 
 ```bash
-# development
-$ yarn run start
+# build
+$ yarn run build
 
-# watch mode
-$ yarn run start:dev
-
-# production mode
-$ yarn run start:prod
+# run
+$ serverless offline
 ```
 
-## Test
+## Infraestructura
 
-```bash
-# unit tests
-$ yarn run test
+- API: https://mn2wfsita3.us-east-2.awsapprunner.com/api
 
-# e2e tests
-$ yarn run test:e2e
+El proyecto originalmente fue requerido sobre Serverless Framework para construir un API Gateway con funciones Lambda. Sin embargo perdí demasiado tiempo peleando con un error al momento
+de hacer deploy y resultó ser de Serverless, aveces ocurre aveces no, vease aquí: https://forum.serverless.com/t/emfile-too-many-open-files-error-while-ci-cd-deploy/14245. Implementé el 
+CodeBuild sobre CodePipeline pero tuve el mismo problema. Pero bueno creo que con la implementacion en el serverlesss.yml se puede apreciar el trabajo mientras soluciono el problema.
+Por ahora se desplegó con App Runner para la muestra.
 
-# test coverage
-$ yarn run test:cov
-```
+## Pendientes
 
-## Support
+Me hubiera encantado completar la prueba al 100% pero he tenido bastantes problemas de tiempo. Anoto por aquí los features que hacen falta para una mejor calidad en el software.
 
-Nest is an MIT-licensed open source project. It can grow thanks to the sponsors and support by the amazing backers. If you'd like to join them, please [read more here](https://docs.nestjs.com/support).
-
-## Stay in touch
-
-- Author - [Kamil Myśliwiec](https://kamilmysliwiec.com)
-- Website - [https://nestjs.com](https://nestjs.com/)
-- Twitter - [@nestframework](https://twitter.com/nestframework)
+- Controlar mejor los errores en los controladores y servicios para tener una repuesta correcta de los errores.
+- Documentar los errores también en Swagger.
+- Se empezó a escribir un ValidationPipe(), sin embargo no se terminó.
+- Se empezó a construir un middleware para validar que los usuarios y peliculas si existieran, sin embargo no se terminó.
+- Se necesita validar que no repitan nota o favoritos ya que DynamoDB no cuenta con un unique() cómo lo hace MongoDB.
 
 ## License
 
