@@ -10,10 +10,10 @@ export class FilteredDataMovie {
   movieIMDBId: string;
 
   @Expose({name: 'spoken_languages'})
-  language:  Array<object>;
+  language:  Language[];
 
   @Expose({name: 'genres'})
-  genres: Array<object>;
+  genres: Genre[];
 
   @Expose({name: 'original_language'})
   originalLanguage: string;

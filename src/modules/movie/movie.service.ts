@@ -9,6 +9,7 @@ import { MovieNote, MovieNoteKey } from '../../shared/interfaces/movie-note.inte
 import { User, UserKey } from '../../shared/interfaces/user.interface';
 import { AddFavoriteDto } from './dto/add-favorite.dto';
 import { AddNoteDto } from './dto/add-note.dto';
+import { MoviesQueryApiDto } from './dto/popular-movies.dto';
 
 @Injectable()
 export class MovieService {
@@ -26,11 +27,16 @@ export class MovieService {
 
   async findPopulars() {
     try {
-      const popularMovies = await this.axiosService.get('/movie/popular')
+      const popularMovies: MoviesQueryApiDto = await this.axiosService.get('/movie/popular')
       return {
         status: true,
-        msg: 'Query completed successfully',
-        data: popularMovies,
+        msg: 'Most popular movies consulted successfully',
+        meta: {
+          page: popularMovies.page,
+          total_pages: popularMovies.total_pages,
+          total_results: popularMovies.total_results,
+        },
+        data: popularMovies.results,
       }
     } catch (error) {
       return {
@@ -43,11 +49,16 @@ export class MovieService {
 
   async findByQuery(query: string, language: string) {
     try {
-      const movies = await this.axiosService.get(`/search/movie?query=${query}`);
+      const movies: MoviesQueryApiDto = await this.axiosService.get(`/search/movie?query=${query}`);
       return {
         status: true,
         msg: 'Query completed successfully',
-        data: movies,
+        meta: {
+          page: movies.page,
+          total_pages: movies.total_pages,
+          total_results: movies.total_results,
+        },
+        data: movies.results,
       }
     } catch (error) {
       return {

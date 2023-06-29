@@ -1,9 +1,9 @@
 import { ApiProperty } from "@nestjs/swagger";
 
-export class AddFavoriteDto {
+export class Response {
   @ApiProperty()
-  userId: string;
+  status: boolean;
 
   @ApiProperty()
-  movieId: number;
+  msg: string;
 }

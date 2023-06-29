@@ -7,8 +7,8 @@ export interface MovieKey {
 
 export interface Movie extends MovieKey {
   movieIMDBId: string;
-  language:  Array<object>;
-  genres: Array<object>;
+  language:  Language[];
+  genres: Genre[];
   originalLanguage: string;
   title: string;
   overview: string;
