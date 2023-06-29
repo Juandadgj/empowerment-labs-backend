@@ -45,4 +45,12 @@ export class UserService {
     }
   }
 
+  async userExists(userId: string) {
+    try {
+      const movie = await this.userModel.get({userId});
+      return Boolean(movie);
+    } catch (error) {
+      return false;
+    }
+  }
 }

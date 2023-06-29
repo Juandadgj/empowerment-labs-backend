@@ -13,6 +13,8 @@ custom:
     Movies: '${env:MOVIE_TABLE_NAME}-${sls:stage}'
     FavoriteMovies: '${env:FAVORITEMOVIE_TABLE_NAME}-${sls:stage}'
     MovieNotes: '${env:MOVIENOTE_TABLE_NAME}-${sls:stage}'
+  userPoolName: '${env:USERS_POOL_NAME}-${sls:stage}'
+  userPoolClientName: '${env:USER_POOL_CLIENT_ID}-${sls:stage}'
 
 provider:
   name: aws
@@ -33,11 +35,17 @@ provider:
             - dynamodb:BatchGetItem
             - dynamodb:BatchWriteItem
             - dynamodb:DescribeTable
+            - cognito-idp:AdminCreateUser
+            - cognito-idp:AdminInitiateAuth
+            - cognito-idp:AdminRespondToAuthChallenge
+            - cognito-idp:ListUsers
+            - cognito-idp:ListUserPoolClients
           Resource:
             - Fn::GetAtt: [ UsersTable, Arn ]
             - Fn::GetAtt: [ MoviesTable, Arn ]
             - Fn::GetAtt: [ MovieNotesTable, Arn ]
             - Fn::GetAtt: [ FavoriteMoviesTable, Arn ]
+            - Fn::Sub: "arn:aws:cognito-idp:${AWS::Region}:${AWS::AccountId}:userpool/*"
   environment:
     STAGE: ${env:STAGE}
     ACCESS_KEY_ID: ${env:ACCESS_KEY_ID}
@@ -48,6 +56,18 @@ provider:
     MOVIE_TABLE_NAME: ${env:MOVIE_TABLE_NAME}
     FAVORITEMOVIE_TABLE_NAME: ${env:FAVORITEMOVIE_TABLE_NAME}
     MOVIENOTE_TABLE_NAME: ${env:MOVIENOTE_TABLE_NAME}
+
+outputs:
+  UserPoolId:
+    Value:
+      Ref: CognitoUserPool
+    Export:
+      Name: UserPoolId
+  UserPoolClientId:
+    Value:
+      Ref: CognitoUserPoolClient
+    Export:
+      Name: UserPoolClientId
 
 functions:
   app:
@@ -106,3 +126,28 @@ resources:
             KeyType: HASH
         BillingMode: PAY_PER_REQUEST
         TableName: ${self:custom.tableName.FavoriteMovies}
+    CognitoUserPool:
+      Type: AWS::Cognito::UserPool
+      Properties:
+        UserPoolName: ${self:custom.userPoolName}
+        UsernameAttributes:
+          - email
+        AutoVerifiedAttributes:
+          - email
+        AdminCreateUserConfig:
+          AllowAdminCreateUserOnly: false
+        Policies:
+          PasswordPolicy:
+            MinimumLength: 8
+            RequireLowercase: false
+            RequireNumbers: false
+            RequireSymbols: false
+            RequireUppercase: false
+    CognitoUserPoolClient:
+      Type: AWS::Cognito::UserPoolClient
+      Properties:
+        UserPoolId:
+          Ref: CognitoUserPool
+        ClientName: ${self:custom.userPoolClientName}
+        ExplicitAuthFlows:
+          - ADMIN_NO_SRP_AUTH

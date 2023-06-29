@@ -166,4 +166,13 @@ export class MovieService {
       }
     }
   }
+
+  async movieExists(movieId: number) {
+    try {
+      const movie = await this.movieModel.get({movieId});
+      return Boolean(movie);
+    } catch (error) {
+      return false;
+    }
+  }
 }
