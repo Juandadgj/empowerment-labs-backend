@@ -13,12 +13,12 @@ async function bootstrap(): Promise<Handler> {
     .setTitle('Empowerment Labs Movies API')
     .setDescription('API to consult the best movies of Empowerment Labs. :D')
     .setVersion('0.1')
+    .addBearerAuth()
     .build();
 
   const document = SwaggerModule.createDocument(app, config);
   SwaggerModule.setup('api', app, document);
 
-  //app.setGlobalPrefix('api/v1')
   app.enableCors();
   await app.init();
 

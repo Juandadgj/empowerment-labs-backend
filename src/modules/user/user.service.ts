@@ -1,22 +1,59 @@
 import { Injectable } from '@nestjs/common';
-import { CreateUserDto } from './dto/create-user.dto';
-import { UpdateUserDto } from './dto/update-user.dto';
+import {
+  AuthenticationDetails,
+  CognitoUser,
+  CognitoUserAttribute,
+  CognitoUserPool,
+} from 'amazon-cognito-identity-js';
 import { Model, InjectModel } from 'nestjs-dynamoose';
 import { User, UserKey } from '../../shared/interfaces/user.interface';
+import { AuthLoginUserDto } from './dto/login-user.dto';
+import { AuthRegisterUserDto } from './dto/register-user.dto';
 
 @Injectable()
 export class UserService {
+  private userPool: CognitoUserPool;
+
   constructor(
     @InjectModel('User')
-    private readonly userModel: Model<User, UserKey>
-  ) {}
+    private readonly userModel: Model<User, UserKey>,
+  ) {
+    this.userPool = new CognitoUserPool({
+      UserPoolId: process.env.AWS_COGNITO_USER_POOL_ID,
+      ClientId: process.env.AWS_COGNITO_CLIENT_ID,
+    });
+  }
 
-  async create(createUserDto: CreateUserDto) {
+  async registerUser(authRegisterUserDto: AuthRegisterUserDto) {
     try {
-      const newUser = await this.userModel.create(createUserDto);
+      const { name, email, password } = authRegisterUserDto;
+      const userCognito = await new Promise((resolve, reject) => {
+        this.userPool.signUp(
+          email,
+          password,
+          [
+            new CognitoUserAttribute({
+              Name: 'name',
+              Value: name,
+            }),
+          ],
+          null,
+          (err, result) => {
+            if (!result) {
+              reject(err);
+            } else {
+              resolve(result.user);
+            }
+          },
+        );
+      });
+      const newUser = await this.userModel.create({
+        name: authRegisterUserDto.name,
+        email: authRegisterUserDto.email,
+      });
       return {
         status: true,
-        msg: 'User successfully created',
+        msg: 'User successfully registered',
         data: newUser,
       }
     } catch (error) {
@@ -28,19 +65,44 @@ export class UserService {
     }
   }
 
-  findOne(id: string) {
+  async authenticateUser(authLoginUserDto: AuthLoginUserDto) {
     try {
-      const user = this.userModel.get({userId: id});
+      const { email, password } = authLoginUserDto;
+      const userData = {
+        Username: email,
+        Pool: this.userPool,
+      };
+
+      const authenticationDetails = new AuthenticationDetails({
+        Username: email,
+        Password: password,
+      });
+
+      const userCognito = new CognitoUser(userData);
+
+      const authorization = await new Promise((resolve, reject) => {
+        userCognito.authenticateUser(authenticationDetails, {
+          onSuccess: (result) => {
+          resolve({
+              accessToken: result.getAccessToken().getJwtToken(),
+              refreshToken: result.getRefreshToken().getToken(),
+            });
+          },
+          onFailure: (err) => {
+            reject(err);
+          },
+        });
+      });
       return {
         status: true,
-        msg: 'Query completed successfully',
-        data: user,
+        msg: 'Successful authentication',
+        data: authorization
       }
     } catch (error) {
       return {
         status: false,
         msg: error.message,
-        data: null
+        data: null,
       }
     }
   }

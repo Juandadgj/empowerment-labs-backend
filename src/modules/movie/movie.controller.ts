@@ -1,4 +1,5 @@
-import { Controller, Get, Post, Param, Query, Body, HttpStatus } from '@nestjs/common';
+import { Controller, Get, Post, Param, Query, Body, HttpStatus, UseGuards } from '@nestjs/common';
+import { AuthGuard } from '@nestjs/passport';
 import { ApiBody, ApiOperation, ApiParam, ApiQuery, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { MovieService } from './movie.service';
 import { AddFavoriteDto } from './dto/add-favorite.dto';
@@ -16,6 +17,7 @@ export class MovieController {
     description: 'Most popular movies consulted successfully',
     type: MoviesQueryDto,
   })
+  @UseGuards(AuthGuard('jwt'))
   @Get('popular')
   findPopulars() {
     return this.movieService.findPopulars();
@@ -28,6 +30,7 @@ export class MovieController {
     type: MoviesQueryDto,
   })
   @ApiQuery({ name: 'query', description: 'Word or phrase to search' })
+  @UseGuards(AuthGuard('jwt'))
   @Get('search')
   findByQuery(@Query('query') query: string) {
     return this.movieService.findByQuery(query, null);
@@ -35,6 +38,7 @@ export class MovieController {
 
   @ApiOperation({ summary: 'Get favorite movies by user' })
   @ApiParam({ name: 'id', description: 'ID of the user to be consulted.' })
+  @UseGuards(AuthGuard('jwt'))
   @Get('favorites/:id')
   favoritesByUser(@Param('id') id: string) {
     return this.movieService.favoritesByUser(id);
@@ -42,6 +46,7 @@ export class MovieController {
 
   @ApiOperation({ summary: 'Get user ratings per movie' })
   @ApiParam({ name: 'id', description: 'ID of the film to be consulted' })
+  @UseGuards(AuthGuard('jwt'))
   @Get('notes/:id')
   notesByMovie(@Param('id') id: string) {
     return this.movieService.notesByMovie(+id);
@@ -54,6 +59,7 @@ export class MovieController {
     description: 'Movie successfully added to favorites',
     type: AddFavoriteDto,
   })
+  @UseGuards(AuthGuard('jwt'))
   @Post('favorite')
   addFavorite(@Body() addFavoriteDto: AddFavoriteDto) {
     return this.movieService.addFavorite(addFavoriteDto);
@@ -66,6 +72,7 @@ export class MovieController {
     description: 'Note added to film successfully',
     type: AddNoteDto,
   })
+  @UseGuards(AuthGuard('jwt'))
   @Post('note')
   addNote(@Body() addNoteDto: AddNoteDto) {
     return this.movieService.addNote(addNoteDto);

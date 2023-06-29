@@ -1,12 +1,15 @@
 import { Module } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
+import { PassportModule } from '@nestjs/passport';
 import { UserService } from './user.service';
 import { UserController } from './user.controller';
 import { DynamooseModule } from 'nestjs-dynamoose';
 import { dynamooseFactory } from 'src/config/dynamoose.factory';
+import { JwtStrategy } from '../../middlewares/jwt.strategy';
 
 @Module({
   imports: [
+    PassportModule.register({ defaultStrategy: 'jwt' }),
     DynamooseModule.forFeatureAsync([
       {
         name: 'User',
@@ -16,6 +19,6 @@ import { dynamooseFactory } from 'src/config/dynamoose.factory';
     ])
   ],
   controllers: [UserController],
-  providers: [UserService]
+  providers: [UserService, JwtStrategy]
 })
 export class UserModule {}

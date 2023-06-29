@@ -46,16 +46,6 @@ provider:
             - Fn::GetAtt: [ MovieNotesTable, Arn ]
             - Fn::GetAtt: [ FavoriteMoviesTable, Arn ]
             - Fn::Sub: "arn:aws:cognito-idp:${AWS::Region}:${AWS::AccountId}:userpool/*"
-  environment:
-    STAGE: ${env:STAGE}
-    ACCESS_KEY_ID: ${env:ACCESS_KEY_ID}
-    SECRET_ACCESS_KEY: ${env:SECRET_ACCESS_KEY}
-    REGION: ${env:REGION}
-    TMDB_TOKEN: ${env:TMDB_TOKEN}
-    USER_TABLE_NAME: ${env:USER_TABLE_NAME}
-    MOVIE_TABLE_NAME: ${env:MOVIE_TABLE_NAME}
-    FAVORITEMOVIE_TABLE_NAME: ${env:FAVORITEMOVIE_TABLE_NAME}
-    MOVIENOTE_TABLE_NAME: ${env:MOVIENOTE_TABLE_NAME}
 
 outputs:
   UserPoolId:
@@ -73,12 +63,9 @@ functions:
   app:
     handler: dist/main.handler
     events:
-      - http:
+      - httpApi:
           method: ANY
-          path: /
-      - http:
-          method: ANY
-          path: '{proxy+}'
+          path: /{proxy+}
 
 resources:
   Resources:
